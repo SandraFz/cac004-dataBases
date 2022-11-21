@@ -1,11 +1,20 @@
 INTEGRADOR BASE DE DATOS
 
+Observaciones: 
+
+Al llegar al punto 2.11 me dí cuenta de que había creado una base de datos con el dato presupuesto como que corresponde a cada empleado y que sumados eran el total de cada departamento pero, en realidad, el presupuesto del cuadro inicial era el total de cada departamento. Así que, a partir del punto 2.11, corregí las tablas y datos y rehice los ejercicios previos que correspondían.
+
+También creé la tabla departamentos con el nombre en singular, lo que corregí recién al final de todos los ejercicios.
+
+____________________________________________________
+
 1) Dada la tabla de datos, armar las tablas pertinentes con sus claves primarias y claves
 foráneas correspondiente.
 
 //Creación de base de datos:
 
 CREATE DATABASE integradorBD;
+
 
 //Creación de tabla empleados
 
@@ -18,6 +27,7 @@ CREATE TABLE `integradorbd`.`empleados`(
     PRIMARY KEY(`dni`)
 ) ENGINE = InnoDB;
 
+
 //Creación de tabla departamento
 
 CREATE TABLE `integradorbd`.`departamento`(
@@ -25,6 +35,8 @@ CREATE TABLE `integradorbd`.`departamento`(
     nombre VARCHAR(12) NOT NULL,
     PRIMARY KEY(numero)
 );
+
+
 //Creación de la tabla empleado-departamento
 
 CREATE TABLE `integradorbd`.`empleado_departamento`(
@@ -33,6 +45,7 @@ CREATE TABLE `integradorbd`.`empleado_departamento`(
     departamento INT(2) NOT NULL,
     PRIMARY KEY(registro)
 );
+
 
 //Inserción datos en tabla departamento
 
@@ -47,9 +60,11 @@ VALUES("37", "Desarrollo");
 INSERT INTO `departamento`(numero, nombre)
 VALUES("16", "Comunicación");
 
+
 //Control de tabla departamento
 
 SELECT * FROM departamento;
+
 
 //Corroboración de un dato, aparentemente, mal cargado
 
@@ -58,6 +73,7 @@ FROM
 	departamento
 WHERE 
 	numero = 77;
+
 
 //Corrección del dato mal cargado
 
@@ -68,14 +84,17 @@ SET
 WHERE
     numero = 77;
 
+
 //El error persiste debido a que la cantidad de caracteres aceptados es inferior al del nombre. Se corrige la tabla.
 
 ALTER TABLE
     departamento CHANGE nombre nombre VARCHAR(15) NOT NULL;
 
+
 //Corroboro que se haya corregido la extensión del tipo de dato
 
 DESCRIBE departamento;
+
 
 //De nuevo corrección del dato mal cargado
 
@@ -85,6 +104,7 @@ SET
     nombre = 'Investigación'
 WHERE
     numero = 77;
+
 
 //Inserto datos en tabla empleados. El último registro no se guarda por estar repetido el dni que es la PK.
 
@@ -285,6 +305,7 @@ VALUES(
     "75000"
 );
 
+
 //Corregí a autoincremental la PK de empleado_departamento
 
 ALTER TABLE
@@ -292,6 +313,7 @@ ALTER TABLE
     CHANGE `registro` `registro` INT(2) 
     NOT NULL 
     AUTO_INCREMENT;
+
 
 2) Realizar las siguientes consultas:
 
@@ -304,6 +326,7 @@ FROM
 ORDER BY
     apellido;
 
+
 2.2 obtener los apellidos de los empleados sin repeticiones.
 
 SELECT DISTINCT
@@ -313,12 +336,14 @@ FROM
 ORDER BY
     apellido;
 
+
 2.3 obtener los datos de los empleados que tengan el apellido Lopez.
 
 SELECT * FROM
     empleados
 WHERE 
     apellido = "Lopez";
+
 
 2.4 obtener los datos de los empleados que tengan el apellido Lopez y los que tengan apellido Perez.
 
@@ -327,6 +352,7 @@ SELECT * FROM
 WHERE 
     apellido = "Lopez" || apellido = "Perez";
 
+
 2.5 Obtener todos los datos de los empleados que trabajen en el departamento 14.
 
 SELECT * FROM
@@ -334,12 +360,14 @@ SELECT * FROM
 WHERE 
     departamento = 14;
 
+
 2.6 Obtener todos los datos de los empleados que trabajen en el departamento 37 y 77.
 
 SELECT * FROM
     empleados
 WHERE 
     departamento = 37 || departamento = 77;
+
 
 2.7 Obtener los datos de los empleados cuyo apellido comience con P.
 
@@ -349,11 +377,13 @@ WHERE
     apellido 
     LIKE "P%";
 
+
 2.8 Obtener el presupuesto total de todos los departamentos.
 
 SELECT SUM(emp.presupuesto)
 FROM	
 	empleados emp;
+
 
 2.9 Obtener un listado completo de empleados, incluyendo por cada empleado los datos del empleado
 y de su departamento.
@@ -370,6 +400,7 @@ FROM
 JOIN departamento WHERE empleados.departamento = departamento.numero
 ORDER BY
     departamento;
+
 
 2.10 Obtener un listado completo de empleados, incluyendo el nombre y apellido del empleado junto
 al nombre y presupuesto de su departamento.
@@ -391,6 +422,7 @@ JOIN departamento dep ON
     dep.numero = emp.departamento
     ORDER BY departamento;
 
+
 2.11 Obtener los nombres y apellidos de los empleados que trabajen en departamentos cuyo
 presupuesto sea mayor de 60000
 
@@ -403,11 +435,13 @@ FROM
 WHERE
     presupuesto > 60000;
 
+
 //Y al llegar a este punto me doy cuenta de que el presupuesto de cada tupla correspondía al total del departamento y no a cada empleado. Así que a corregir todo...
 
 //Agrego la columna prespuesto a la tabla departamento.
 
 ALTER TABLE departamento ADD presupuesto INT(6) AFTER nombre;
+
 
 //Actualizo el campo presupuesto de la tabla departamento.
 
@@ -438,6 +472,8 @@ SET
 WHERE
     numero = 16;
 
+
+
 //Corroboro:
 
 SELECT * FROM `departamento` WHERE 1
@@ -446,9 +482,11 @@ SELECT * FROM `departamento` WHERE 1
 
 ALTER TABLE empleados DROP presupuesto;
 
+
 //Corroboro:
 
 SELECT * FROM `empleados` WHERE 1;
+
 
 //Rehago consigna 2.8 Obtener el presupuesto total de todos los departamentos:
 
@@ -456,6 +494,7 @@ SELECT
     SUM(presupuesto)
 FROM
     departamento;
+
 
 //Rehago consigna 2.9. Obtener un listado completo de empleados, incluyendo por cada empleado los datos del empleado y de su departamento:
 
@@ -473,6 +512,7 @@ JOIN departamento dep ON
 ORDER BY
     numero;
 
+
 //Rehago consigna 2.10. Obtener un listado completo de empleados, incluyendo el nombre y apellido del empleado junto al nombre y presupuesto de su departamento:
 
 SELECT
@@ -487,6 +527,7 @@ JOIN departamento dep ON
 ORDER BY
     dep.nombre;
 
+
 //Rehago consigna 2.11. Obtener los nombres y apellidos de los empleados que trabajen en departamentos cuyo prespuesto sea mayor de 60000:
 
 SELECT * FROM
@@ -494,6 +535,7 @@ SELECT * FROM
 JOIN departamento WHERE departamento = numero && presupuesto > 60000
 ORDER BY
     numero;
+
 
 2.12 Añadir un nuevo departamento: "Calidad", con un presupuesto de 40000 y código 11, añadir un empleado vinculado al departamento recién creado: Esther Vazquez, DNI 89267109.
 
@@ -505,6 +547,7 @@ JOIN departamento WHERE departamento = numero && presupuesto > 60000
 ORDER BY
     numero;
 
+
 //Chequeo:
 
 SELECT
@@ -512,7 +555,8 @@ SELECT
 FROM
     `departamento`
 WHERE
-    1
+    1;
+
 
 //Añado un nuevo empleado vinculado al nuevo departamento:
 
@@ -524,9 +568,11 @@ INSERT INTO `empleados`(
 )
 VALUES('89267109', 'Esther', 'Vazquez', 11);
 
+
 //Chequeo:
 
-SELECT * FROM `empleados` WHERE 1
+SELECT * FROM `empleados` WHERE 1;
+
 
 2.13 Aplicar un recorte presupuestario del 10% a todos los departamentos.
 
@@ -537,9 +583,11 @@ SET
         presupuesto -(presupuesto * 10)
     );
 
+
 //Chequeo:
 
-SELECT * FROM `departamento` WHERE 1
+SELECT * FROM `departamento` WHERE 1;
+
 
 //Quedaron con números negativos debido a una operación errónea así que, vuelvo a actualizar la tabla departamentos con los presupuestos originales.
 
@@ -580,6 +628,7 @@ SET
 WHERE
     numero = 11;
 
+
 //Vuelvo a actualizar con la fómula correcta:
 
 UPDATE
@@ -588,6 +637,7 @@ SET
     `presupuesto` =(
         presupuesto -(presupuesto * (10/100))
     );
+
 
 //Chequeo
 
@@ -602,6 +652,7 @@ SET
     `departamento` = '14'
 WHERE
     departamento = 77;
+
 
 //Chequeo
 
@@ -620,6 +671,7 @@ FROM
 WHERE
     departamento = 14;
 
+
 //Chequeo.
 
 DELETE
@@ -627,6 +679,7 @@ FROM
     `empleados`
 WHERE
     departamento = 14;
+
 
 2.16 Despedir a los empleados que trabajen en departamentos con un presupuesto superior a 90000.
 
@@ -643,6 +696,7 @@ WHERE
         presupuesto > 90000
 );
 
+
 //Después del descuento del 10% no hay departamentos con prespuestos superiores a 90000 por lo que no elimina ninguno.
 
 //Para probar modifico la consigna a añado un nuevo departamento y empleado vinculados con un presupuesto superior a 90000.
@@ -657,9 +711,10 @@ INSERT INTO `empleados`(
     `apellido`,
     `departamento`
 )
-VALUES(23098743, "Esteban", "Aguilar", 20)
+VALUES(23098743, "Esteban", "Aguilar", 20);
 
-//Despido los empleados que pertenecen a departamentos con presupuestos superiores a 90000:
+
+//Despido los empleados que pertenecen a departamentos con presupuestos superiores a 90000.
 
 DELETE
 FROM
@@ -674,8 +729,9 @@ WHERE
         presupuesto > 90000
 );
 
-//Chequeo:
 
+//Chequeo:
+ 
 
 
 Observaciones: al llegar al punto 2.11 me dí cuenta de que había creado una tabla con el dato prespuesto como que corresponde a cada empleado y que sumados eran el total de cada departamento pero, en realidad, el presupuesto era el total de cada departamento. Así que corregí las tablas y datos y rehice los ejercicios que correspondían.
